@@ -1,0 +1,102 @@
+CREATE OR REPLACE TABLE `lunar-compiler-434618-r3.uberdataengineering.tbl_analytics` AS (
+  SELECT 
+    f.VendorID AS VendorID,
+    f.tpep_pickup_datetime AS tpep_pickup_datetime,
+    f.tpep_dropoff_datetime AS tpep_dropoff_datetime,
+    f.passenger_count AS passenger_count,
+    f.trip_distance AS trip_distance,
+    f.pickup_longitude AS pickup_longitude,
+    f.pickup_latitude AS pickup_latitude,
+    f.RatecodeID AS RatecodeID,
+    f.store_and_fwd_flag AS store_and_fwd_flag,
+    f.dropoff_longitude AS dropoff_longitude,
+    f.dropoff_latitude AS dropoff_latitude,
+    f.payment_type AS payment_type,
+    f.fare_amount AS fare_amount,
+    f.extra AS extra,
+    f.improvement_surcharge AS improvement_surcharge,
+    f.mta_tax AS mta_tax,
+    f.tip_amount AS tip_amount,
+    f.tolls_amount AS tolls_amount,
+    f.total_amount AS total_amount
+  FROM `lunar-compiler-434618-r3.uberdataengineering.fact_table` AS f
+);
+
+This query creates or replaces the table tbl_analytics in the lunar-compiler-434618-r3.uberdataengineering dataset.
+The query selects all relevant fields from the fact_table and uses aliases for each column (in this case, keeping the column names the same as the source).
+If the tbl_analytics table already exists, it will be replaced by the new version created by this query
+
+
+select * from `lunar-compiler-434618-r3.uberdataengineering.tbl_analytics`
+
+
+CREATE OR REPLACE TABLE `lunar-compiler-434618-r3.uberdataengineering.tbl_analytics` AS (
+  SELECT 
+    ft.VendorID AS VendorID,
+    fv.VendorID AS VendorID_Detail,  -- Joined from fact_table_vendorid
+    ft.tpep_pickup_datetime AS tpep_pickup_datetime,
+    ft.tpep_dropoff_datetime AS tpep_dropoff_datetime,
+    ft.passenger_count AS passenger_count,
+    ft.trip_distance AS trip_distance,
+    ft.pickup_longitude AS pickup_longitude,
+    ft.pickup_latitude AS pickup_latitude,
+    fr.RatecodeID AS RatecodeID_Detail,  -- Joined from fact_table_RatecodeID
+    ft.RatecodeID AS RatecodeID,
+    ft.store_and_fwd_flag AS store_and_fwd_flag,
+    ft.dropoff_longitude AS dropoff_longitude,
+    ft.dropoff_latitude AS dropoff_latitude,
+    ft.payment_type AS payment_type,
+    ft.fare_amount AS fare_amount,
+    ft.extra AS extra,
+    ft.improvement_surcharge AS improvement_surcharge,
+    ft.mta_tax AS mta_tax,
+    ft.tip_amount AS tip_amount,
+    ft.tolls_amount AS tolls_amount,
+    ft.total_amount AS total_amount
+  FROM `lunar-compiler-434618-r3.uberdataengineering.fact_table` AS ft
+  LEFT JOIN `lunar-compiler-434618-r3.uberdataengineering.fact_table_RatecodeID` AS fr
+    ON ft.RatecodeID = fr.RatecodeID
+  LEFT JOIN `lunar-compiler-434618-r3.uberdataengineering.fact_table_VendorID` AS fv
+    ON ft.VendorID = fv.VendorID
+  LEFT JOIN `lunar-compiler-434618-r3.uberdataengineering.fact_table_dropoff_latitude` AS fdlat
+    ON ft.dropoff_latitude = fdlat.dropoff_latitude
+  LEFT JOIN `lunar-compiler-434618-r3.uberdataengineering.fact_table_dropoff_longitude` AS fdlong
+    ON ft.dropoff_longitude = fdlong.dropoff_longitude
+  LEFT JOIN `lunar-compiler-434618-r3.uberdataengineering.fact_table_extra` AS fextra
+    ON ft.extra = fextra.extra
+  LEFT JOIN `lunar-compiler-434618-r3.uberdataengineering.fact_table_fare_amount` AS ffare
+    ON ft.fare_amount = ffare.fare_amount
+  LEFT JOIN `lunar-compiler-434618-r3.uberdataengineering.fact_table_improvement_surcharge` AS fis
+    ON ft.improvement_surcharge = fis.improvement_surcharge
+  LEFT JOIN `lunar-compiler-434618-r3.uberdataengineering.fact_table_mta_tax` AS fmta
+    ON ft.mta_tax = fmta.mta_tax
+  LEFT JOIN `lunar-compiler-434618-r3.uberdataengineering.fact_table_passenger_count` AS fpc
+    ON ft.passenger_count = fpc.passenger_count
+  LEFT JOIN `lunar-compiler-434618-r3.uberdataengineering.fact_table_payment_type` AS fpt
+    ON ft.payment_type = fpt.payment_type
+  LEFT JOIN `lunar-compiler-434618-r3.uberdataengineering.fact_table_pickup_latitude` AS fpulat
+    ON ft.pickup_latitude = fpulat.pickup_latitude
+  LEFT JOIN `lunar-compiler-434618-r3.uberdataengineering.fact_table_pickup_longitude` AS fpulong
+    ON ft.pickup_longitude = fpulong.pickup_longitude
+  LEFT JOIN `lunar-compiler-434618-r3.uberdataengineering.fact_table_store_and_fwd_flag` AS fsfw
+    ON ft.store_and_fwd_flag = fsfw.store_and_fwd_flag
+  LEFT JOIN `lunar-compiler-434618-r3.uberdataengineering.fact_table_tip_amount` AS ftip
+    ON ft.tip_amount = ftip.tip_amount
+  LEFT JOIN `lunar-compiler-434618-r3.uberdataengineering.fact_table_tolls_amount` AS ftoll
+    ON ft.tolls_amount = ftoll.tolls_amount
+  LEFT JOIN `lunar-compiler-434618-r3.uberdataengineering.fact_table_total_amount` AS ftotal
+    ON ft.total_amount = ftotal.total_amount
+  LEFT JOIN `lunar-compiler-434618-r3.uberdataengineering.fact_table_tpep_dropoff_datetime` AS fdropoff
+    ON ft.tpep_dropoff_datetime = fdropoff.tpep_dropoff_datetime
+  LEFT JOIN `lunar-compiler-434618-r3.uberdataengineering.fact_table_tpep_pickup_datetime` AS fpickup
+    ON ft.tpep_pickup_datetime = fpickup.tpep_pickup_datetime
+  LEFT JOIN `lunar-compiler-434618-r3.uberdataengineering.fact_table_trip_distance` AS fdist
+    ON ft.trip_distance = fdist.trip_distance
+);
+
+
+Joins: The query performs LEFT JOIN operations to include data from other related tables such as fact_table_RatecodeID, fact_table_vendorid, and others.
+Aliases: For each joined table, a corresponding alias is used (e.g., fr, fv, etc.), and new columns are added to the tbl_analytics table (e.g., RatecodeID_Detail, VendorID_Detail).
+Key Fields: The joins are based on matching key fields such as VendorID, RatecodeID, pickup_latitude, pickup_longitude, etc.
+
+
